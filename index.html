@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MVBench - Multi-View Spatial Reasoning</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #fff;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #000;
+        }
+
+        h2 {
+            font-size: 1.8em;
+            font-weight: 600;
+            margin-top: 60px;
+            margin-bottom: 25px;
+            color: #000;
+        }
+
+        h3 {
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            color: #222;
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            color: #666;
+            font-weight: 300;
+            margin-bottom: 30px;
+        }
+
+        .authors {
+            font-size: 1em;
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        .authors sup {
+            font-size: 0.75em;
+            margin-left: 2px;
+        }
+
+        .affiliations {
+            font-size: 0.9em;
+            color: #777;
+            line-height: 1.6;
+        }
+
+        .affiliations sup {
+            font-size: 0.8em;
+            margin-right: 3px;
+        }
+
+        .links {
+            text-align: center;
+            margin: 50px 0;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            margin: 10px;
+            background-color: #000;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            font-size: 0.95em;
+        }
+
+        .btn:hover {
+            background-color: #333;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .answer {
+            font-size: 1.05em;
+            color: #555;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .abstract {
+            background-color: #f8f8f8;
+            padding: 30px;
+            border-radius: 8px;
+            margin: 40px 0;
+            border-left: 4px solid #000;
+        }
+
+        .abstract .answer {
+            margin-bottom: 10px;
+        }
+
+        .research-image {
+            width: 80%;
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 30px auto;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: block;
+        }
+
+        .image-caption {
+            text-align: center;
+            color: #666;
+            font-size: 0.9em;
+            margin-top: -20px;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        .image-row {
+            display: flex;
+            gap: 20px;
+            margin: 30px 0;
+            align-items: flex-start;
+        }
+
+        .highlight-box {
+            background-color: #fff9e6;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 30px 0;
+            border-left: 4px solid #ffc107;
+        }
+
+        ul {
+            margin-left: 25px;
+            margin-bottom: 15px;
+        }
+
+        ul li {
+            font-size: 1.05em;
+            color: #555;
+            line-height: 1.8;
+            margin-bottom: 8px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 100px;
+            padding-top: 40px;
+            border-top: 1px solid #eee;
+            color: #888;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+            
+            h2 {
+                font-size: 1.5em;
+            }
+            
+            h3 {
+                font-size: 1.2em;
+            }
+            
+            .answer {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Can VLMs Reason Through Multiple Views?</h1>
+            <p class="authors">
+                Hantao Zhang<sup>1</sup>, 
+                Jinru Sui<sup>2</sup>, 
+                Ed Li<sup>1</sup>, 
+                Yutaro Yamada<sup>3</sup>, 
+                Dirk Bergemann<sup>1</sup>, 
+                Zhuoran Yang<sup>1</sup>
+            </p>
+            <p class="affiliations">
+                <sup>1</sup> Yale University &nbsp;&nbsp;
+                <sup>2</sup> University of Edinburgh &nbsp;&nbsp;
+                <sup>3</sup> Sakana AI
+            </p>
+        </header>
+
+        <div class="links">
+            <a href="#" class="btn">Paper</a>
+            <a href="#" class="btn">Code</a>
+            <a href="#" class="btn">Dataset</a>
+        </div>
+
+        <img src="images/big_pic.png" alt="Multi-view Scene with 3D Objects" class="research-image">
+        <p class="image-caption">Figure 1: MVBench</p>
+
+        <!-- INTRODUCTION SECTION -->
+        <section class="section">
+            <h2>1. Introduction</h2>
+            <p class="answer">
+                Recent advances in Large Language Models (LLMs) and Vision-Language Models (VLMs) have demonstrated remarkable progress in complex perceptual and reasoning tasks. However, effectively solving many real-world tasks fundamentally depends on the ability to perceive and reason about scenes from multiple viewpoints.
+            </p>
+            <p class="answer">
+                Humans naturally perform multi-angle observations to construct coherent mental models of objects, resolving perceptual ambiguities that arise from single viewpoints. This ability is crucial when assembling complex objects, where each component must be rotated and inspected from multiple viewpoints to determine how it connects with others.
+            </p>
+            <p class="answer">
+                Current spatial reasoning benchmarks primarily assess single-view or few-view understanding, without testing the fundamental ability of VLMs to integrate partial visual evidence from multiple perspectives into a unified 3D understanding. We address this gap by introducing MVBench.
+            </p>
+
+            <div class="highlight-box">
+                <h3>Our Contributions</h3>
+                <ul>
+                    <li>We introduce <strong>MVBench</strong>, a comprehensive and extensible benchmark for evaluating VLMs' ability to integrate multi-view observations into coherent 3D scene understanding</li>
+                    <li>We provide a flexible <strong>data generation pipeline</strong> that allows researchers to easily extend the dataset with new 3D assets, task variants, and viewpoint configurations</li>
+                    <li>We conduct a <strong>systematic evaluation</strong> of state-of-the-art VLMs on MVBench, revealing key failure modes, biases, and limitations</li>
+                    <li>We propose <strong>ViewNavigator</strong>, a multi-agent framework that models perception, planning, and belief-updating, consistently enhancing VLM performance by over 50%</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- MOTIVATION SECTION -->
+        <section class="section">
+            <h2>2. Motivation</h2>
+            <p class="answer">
+                To illustrate the necessity of our benchmark, we motivate our study through a real-world furniture part assembly task. In this setting, labeled components (legs, table tops, backrests) must be connected and arranged to form functional furniture. Solving this task naturally demands multi-view perception, 3D spatial reasoning, and common-sense knowledge.
+            </p>
+
+            <p class="answer">
+                While recent LLM-based approaches have shown success in environments like Minecraft or Blender where assemblies involve standardized blocks, real-world furniture assembly poses significantly greater complexity due to irregular, non-convex shapes that defy concise linguistic descriptions.
+            </p>
+
+            <img src="images/furniture_assembly.png" alt="Furniture Assembly" class="research-image">
+            <p class="image-caption">Figure 2: Top Left: Many real-world objects do not lend themselves to simple natural language description. The table on the right can be described using fundamental convex shapes and their bounding boxes but the chair on the left has non-convex parts without an analytical expression. Top Right: Often times single-view observation leads to visual misconception and does not reveal some alignment issues. The chair looks well-assembled in the view shown on the left but when it turns to the view shown on the right we see the backrest is slightly misplaced in the X-axis. Bottom: Only using the bounding box dimensions, we are unable to assemble furniture that have non-convex parts. </p>
+            <p class="answer">
+                These examples underscore the critical need for robust VLMs capable of integrating information across multiple visual perspectives to build accurate internal 3D understanding.
+            </p>
+        </section>
+
+        <!-- MVBENCH SECTION -->
+        <section class="section">
+            <h2>3. MVBench</h2>
+            <p class="answer">
+                MVBench is a foundational evaluation designed to test VLMs' multi-view spatial reasoning capabilities, preparing them for complex real-world tasks like mechanical engineering or 3D scene reconstruction.
+            </p>
+
+            <h3>3.1 Dataset Creation</h3>
+            <p class="answer">
+                We design a modular pipeline that procedurally generates diverse 3D scenes with controlled variations:
+            </p>
+
+            <img src="images/data_generation_pipeline.png" alt="Data Generation Pipeline" class="research-image">
+            <p class="image-caption">Figure 3: MVBench's extensible data generation pipeline supports plug-and-play 3D assets and flexible camera configurations</p>
+
+            <h3>3D Assets</h3>
+            <p class="answer">
+                For synthetic tasks, we use fundamental geometric objects randomly sampled from cubes, spheres, cylinders, and cones. For real-world objects, we use the 3DCoMPaT++ dataset consisting of thousands of real-world objects from different categories like tables, chairs, and airplanes. All objects are rescaled to share a common bounding box to minimize visual ambiguity.
+            </p>
+
+            <h3>Object Placement</h3>
+            <p class="answer">
+                We fix a central object at the origin and randomize other objects' positions while enforcing minimum and maximum separation distances. To analyze model limitations, we construct controlled task variants:
+            </p>
+            <ul>
+                <li><strong>DoF=1:</strong> Objects placed along a single axis (1D relative relationships)</li>
+                <li><strong>DoF=2:</strong> Objects lie on the same 2D plane</li>
+                <li><strong>DoF=3:</strong> No constraints of placement in 3D space</li>
+            </ul>
+
+            <h3>Camera Viewpoints</h3>
+            <p class="answer">
+                In the main benchmark, we render six viewpoints with uniformly distributed azimuth angles and slight elevations, guaranteeing visibility of all three axes. The pipeline supports arbitrary viewpoint configurations, enabling analysis of inductive biases and creation of specialized tasks.
+            </p>
+        </section>
+
+        <!-- RESULTS SECTION -->
+        <section class="section">
+            <h2>4. Evaluation Results</h2>
+            <p class="answer">
+                We systematically evaluated the performance of 7 leading VLMs including Claude 3.7 Sonnet, Claude 4 Sonnet, Gemini 2.5 Flash, Gemini 2.5 Pro, GPT-4o, GPT-5, and GPT-o3.
+            </p>
+
+            <img src="images/3d_tasks_model_comparison.png" alt="Model Performance Comparison" class="research-image">
+            <p class="image-caption">Figure 4: Performance comparison across different VLMs on MVBench tasks. GPT-5 achieves best overall performance while models like Claude series and GPT-4o struggle on harder 3D tasks.</p>
+        </section>
+
+        <!-- FAILURE AND BIAS ANALYSIS -->
+        <section class="section">
+            <h2>5. Failure and Bias Analysis</h2>
+            
+            <h3>5.1 Failure Patterns</h3>
+            <p class="answer">
+                Single isometric views (clearly displaying all three axes) significantly reduced accuracy, underscoring the essential role of multi-view observations. 
+                VLMs primarily struggle with <strong>accurately identifying and articulating the directionality of axes within the 3D context</strong>. Models consistently exhibited difficulty in expressing axis directions using clear and unambiguous 3D spatial language. Motivated by this observation, we further explored whether VLM performance could be enhanced by decomposing the task into simpler 2D views. We designed a variant of the MVBench task (2D) utilizing three canonical (front, side, top) views, each emphasizing one 2D plane (XZ, YZ, XY) and clearly displaying only two axes per view. Models were tested under two configurations: first, providing all three canonical views simultaneously to produce a single integrated 3D answer (Single-agent), and second, utilizing a multi-agent approach wherein each agent independently assessed one canonical view, with the final 3D answer obtained by straightforward integration of individual responses (resolving inconsistencies by random selection).
+            </p>
+            <img src="images/task_example_2.png" alt="Task Example" class="research-image">
+            <p class="image-caption">Figure 5: Task examples for failure and bias analysis.</p>
+
+            <img src="images/2d_comparison.png" alt="Model Performance Comparison" class="research-image">
+            <p class="image-caption">Figure 6: By simplifying the task into 2D multi-view task, VLMs demonstrate significantly higher performance. Decomposing 2D multi-view task into a multi-agent 2D single-view task can further improve VLMs’ performances by a great margin. Adding visual aids like grids and distinct colors enhances the performance of Claude series but shows limited help to Gemini series and GPT-4o.</p>
+
+            <h3>5.2 Bias Discovery</h3>
+            
+            <h4>Visual Enhancements</h4>
+            <p class="answer">
+                We explored how visual enhancements (distinct color schemes and grids) influence VLMs' 3D perception. Visual structures indeed boost performance for Claude series models; however, surprisingly, Gemini 2.5 Pro's performance declines under these conditions. We also observed distinct color biases among different models.
+            </p>
+
+            <h4>Coordinate Rotation</h4>
+            <p class="answer">
+                Models frequently disregarded explicitly depicted coordinate directions, defaulting to reasoning based on the conventional right-handed coordinate system. This reflects a strong inductive bias from extensive exposure to standard coordinate conventions during pretraining. Performance degraded significantly under unconventional axis orientations.
+            </p>
+
+            <div class="image-row">
+                <div class="image-col">
+                    <img src="images/2d_color_comparison.png" alt="2d_color" class="research-image">
+                    <p class="image-caption">Figure 7(a): VLMs exhibit fluctuating performance across different color combinations. Notably, these fluctuations diverge from human perception: the models perform better on the less distinguishable Maroon/Purple pair, yet worse on the more distinct Olive/Coral pair.</p>
+                </div>
+                <div class="image-col">
+                    <img src="images/2D_rotation.png" alt="2d_rotation" class="research-image">
+                    <p class="image-caption">Figure 7(b): VLMs' performances degrade under unconventional axis orientations.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEWNAVIGATOR SECTION -->
+        <section class="section">
+            <h2>6. ViewNavigator</h2>
+            <p class="answer">
+                We introduce ViewNavigator, a multi-agent system designed to actively reason about spatial relationships between objects within a 3D environment. Our agent architecture integrates a VLM and an LLM in a closed-loop manner without requiring post-training or external geometry-based image analysis.
+            </p>
+
+            <img src="images/agent_workflow.png" alt="ViewNavigator Framework" class="research-image">
+            <p class="image-caption">Figure 8: ViewNavigator actively selects informative viewpoints, perceives, and fuses multi-view evidence through belief-updating</p>
+
+            <h3>How ViewNavigator Works</h3>
+            <ul>
+                <li><strong>LLM Planner:</strong> Strategically plans the next viewpoint to maximize information gain</li>
+                <li><strong>VLM Perception:</strong> Processes visual inputs from selected viewpoints and jittered variations</li>
+                <li><strong>Belief State:</strong> Maintains probabilistic belief over spatial directions using Dirichlet distributions</li>
+                <li><strong>Active Selection:</strong> Iteratively selects viewpoints until confidence threshold is reached</li>
+            </ul>
+
+            <p class="answer">
+                The agent captures multiple images using micro-jitters (small perturbations around a base viewpoint) to assess stability in the VLM's answers, which serves as a confidence score. ViewNavigator significantly enhances the performance of diverse base models on MVBench by more than 50%, demonstrating its potential as a plug-and-play reasoning scaffold.
+            </p>
+            <img src="images/3d_tasks_model_comparison_agentic.png" alt="ViewNavigator Performance" class="research-image">
+            <p class="image-caption">Figure 9: ViewNavigator framework significantly enhances various base models’ performances on the 3D DoF=3 tasks.</p>
+        </section>
+
+        <!-- CONCLUSION -->
+        <section class="section">
+            <h2>7. Conclusion</h2>
+            <p class="answer">
+                We presented MVBench, a benchmark specifically designed to test the ability of VLMs to integrate multi-view observations into coherent 3D scene understanding. Our systematic evaluation revealed fundamental limitations: while VLMs excel at recognizing 2D planar relations from single images, they struggle with integrating information across multiple views and interpreting 3D spatial relations.
+            </p>
+            <p class="answer">
+                MVBench, its extensible pipeline, and ViewNavigator form both a diagnostic tool and a stepping stone toward more powerful VLM-based agents. This benchmark raises awareness of current VLM limitations in multi-view integration and serves as a selection standard for base models when building VLM-based 3D-reasoning agents.
+            </p>
+            <p class="answer">
+                We hope that future research builds on this foundation to equip VLMs with the spatial understanding necessary for diverse downstream 3D tasks such as part assembly, scene editing, and 3D asset creation.
+            </p>
+        </section>
+
+        <footer>
+            <p>Contact: hantao.zhang@yale.edu</p>
+        </footer>
+    </div>
+</body>
+</html>
