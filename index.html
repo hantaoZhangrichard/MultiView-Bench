@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MVBench</title>
+    <title>MultiView-Bench</title>
     <style>
         * {
             margin: 0;
@@ -292,7 +292,7 @@
         </div>
 
         <img src="images/big_pic.png" alt="Multi-view Scene with 3D Objects" class="research-image">
-        <p class="image-caption">Figure 1: MVBench</p>
+        <p class="image-caption">Figure 1: MultiView-Bench</p>
 
         <!-- INTRODUCTION SECTION -->
         <section class="section">
@@ -304,15 +304,15 @@
                 Humans naturally perform multi-angle observations to construct coherent mental models of objects, resolving perceptual ambiguities that arise from single viewpoints. This ability is crucial when assembling complex objects, where each component must be rotated and inspected from multiple viewpoints to determine how it connects with others.
             </p>
             <p class="answer">
-                Current spatial reasoning benchmarks primarily assess single-view or few-view understanding, without testing the fundamental ability of VLMs to integrate partial visual evidence from multiple perspectives into a unified 3D understanding. We address this gap by introducing MVBench.
+                Current spatial reasoning benchmarks primarily assess single-view or few-view understanding, without testing the fundamental ability of VLMs to integrate partial visual evidence from multiple perspectives into a unified 3D understanding. We address this gap by introducing MultiView-Bench.
             </p>
 
             <div class="highlight-box">
                 <h3>Our Contributions</h3>
                 <ul>
-                    <li>We introduce <strong>MVBench</strong>, a comprehensive and extensible benchmark for evaluating VLMs' ability to integrate multi-view observations into coherent 3D scene understanding</li>
+                    <li>We introduce <strong>MultiView-Bench</strong>, a comprehensive and extensible benchmark for evaluating VLMs' ability to integrate multi-view observations into coherent 3D scene understanding</li>
                     <li>We provide a flexible <strong>data generation pipeline</strong> that allows researchers to easily extend the dataset with new 3D assets, task variants, and viewpoint configurations</li>
-                    <li>We conduct a <strong>systematic evaluation</strong> of state-of-the-art VLMs on MVBench, revealing key failure modes, biases, and limitations</li>
+                    <li>We conduct a <strong>systematic evaluation</strong> of state-of-the-art VLMs on MultiView-Bench, revealing key failure modes, biases, and limitations</li>
                     <li>We propose <strong>ViewNavigator</strong>, a multi-agent framework that models perception, planning, and belief-updating, consistently enhancing VLM performance by over 50%</li>
                 </ul>
             </div>
@@ -336,11 +336,11 @@
             </p>
         </section>
 
-        <!-- MVBENCH SECTION -->
+        <!-- MultiView-Bench SECTION -->
         <section class="section">
-            <h2>3. MVBench</h2>
+            <h2>3. MultiView-Bench</h2>
             <p class="answer">
-                MVBench is a foundational evaluation designed to test VLMs' multi-view spatial reasoning capabilities, preparing them for complex real-world tasks like mechanical engineering or 3D scene reconstruction. The core task of MVBench assesses a VLM's ability to reason about the relative positions of objects within a 3D scene. VLMs must observe scenes from multiple viewpoints to infer spatial relationships accurately。
+                MultiView-Bench is a foundational evaluation designed to test VLMs' multi-view spatial reasoning capabilities, preparing them for complex real-world tasks like mechanical engineering or 3D scene reconstruction. The core task of MultiView-Bench assesses a VLM's ability to reason about the relative positions of objects within a 3D scene. VLMs must observe scenes from multiple viewpoints to infer spatial relationships accurately。
             </p>
 
             <h3>3.1 Dataset Creation</h3>
@@ -349,7 +349,7 @@
             </p>
 
             <img src="images/data_generation_pipeline.png" alt="Data Generation Pipeline" class="research-image">
-            <p class="image-caption">Figure 3: MVBench's extensible data generation pipeline supports plug-and-play 3D assets and flexible camera configurations</p>
+            <p class="image-caption">Figure 3: MultiView-Bench's extensible data generation pipeline supports plug-and-play 3D assets and flexible camera configurations</p>
 
             <h3>3D Assets</h3>
             <p class="answer">
@@ -449,7 +449,7 @@
             </p>
 
             <img src="images/3d_tasks_model_comparison.png" alt="Model Performance Comparison" class="research-image">
-            <p class="image-caption">Figure 4: Performance comparison across different VLMs on MVBench tasks. GPT-5 achieves best overall performance while models like Claude series and GPT-4o struggle on harder 3D tasks.</p>
+            <p class="image-caption">Figure 4: Performance comparison across different VLMs on MultiView-Bench tasks. GPT-5 achieves best overall performance while models like Claude series and GPT-4o struggle on harder 3D tasks.</p>
         </section>
 
         <!-- FAILURE AND BIAS ANALYSIS -->
@@ -459,7 +459,7 @@
             <h3>5.1 Failure Patterns</h3>
             <p class="answer">
                 Single isometric views (clearly displaying all three axes) significantly reduced accuracy, underscoring the essential role of multi-view observations. 
-                VLMs primarily struggle with <strong>accurately identifying and articulating the directionality of axes within the 3D context</strong>. Models consistently exhibited difficulty in expressing axis directions using clear and unambiguous 3D spatial language. Motivated by this observation, we further explored whether VLM performance could be enhanced by decomposing the task into simpler 2D views. We designed a variant of the MVBench task (2D) utilizing three canonical (front, side, top) views, each emphasizing one 2D plane (XZ, YZ, XY) and clearly displaying only two axes per view. Models were tested under two configurations: first, providing all three canonical views simultaneously to produce a single integrated 3D answer (Single-agent), and second, utilizing a multi-agent approach wherein each agent independently assessed one canonical view, with the final 3D answer obtained by straightforward integration of individual responses (resolving inconsistencies by random selection).
+                VLMs primarily struggle with <strong>accurately identifying and articulating the directionality of axes within the 3D context</strong>. Models consistently exhibited difficulty in expressing axis directions using clear and unambiguous 3D spatial language. Motivated by this observation, we further explored whether VLM performance could be enhanced by decomposing the task into simpler 2D views. We designed a variant of the MultiView-Bench task (2D) utilizing three canonical (front, side, top) views, each emphasizing one 2D plane (XZ, YZ, XY) and clearly displaying only two axes per view. Models were tested under two configurations: first, providing all three canonical views simultaneously to produce a single integrated 3D answer (Single-agent), and second, utilizing a multi-agent approach wherein each agent independently assessed one canonical view, with the final 3D answer obtained by straightforward integration of individual responses (resolving inconsistencies by random selection).
             </p>
             <img src="images/task_example_2.png" alt="Task Example" class="research-image">
             <p class="image-caption">Figure 5: Task examples for failure and bias analysis.</p>
@@ -510,7 +510,7 @@
             </ul>
 
             <p class="answer">
-                The agent captures multiple images using micro-jitters (small perturbations around a base viewpoint) to assess stability in the VLM's answers, which serves as a confidence score. ViewNavigator significantly enhances the performance of diverse base models on MVBench by more than 50%, demonstrating its potential as a plug-and-play reasoning scaffold.
+                The agent captures multiple images using micro-jitters (small perturbations around a base viewpoint) to assess stability in the VLM's answers, which serves as a confidence score. ViewNavigator significantly enhances the performance of diverse base models on MultiView-Bench by more than 50%, demonstrating its potential as a plug-and-play reasoning scaffold.
             </p>
             <img src="images/3d_tasks_model_comparison_agentic.png" alt="ViewNavigator Performance" class="research-image">
             <p class="image-caption">Figure 9: ViewNavigator framework significantly enhances various base models’ performances on the 3D DoF=3 tasks.</p>
@@ -520,10 +520,10 @@
         <section class="section">
             <h2>7. Conclusion</h2>
             <p class="answer">
-                We presented MVBench, a benchmark specifically designed to test the ability of VLMs to integrate multi-view observations into coherent 3D scene understanding. Our systematic evaluation revealed fundamental limitations: while VLMs excel at recognizing 2D planar relations from single images, they struggle with integrating information across multiple views and interpreting 3D spatial relations.
+                We presented MultiView-Bench, a benchmark specifically designed to test the ability of VLMs to integrate multi-view observations into coherent 3D scene understanding. Our systematic evaluation revealed fundamental limitations: while VLMs excel at recognizing 2D planar relations from single images, they struggle with integrating information across multiple views and interpreting 3D spatial relations.
             </p>
             <p class="answer">
-                MVBench, its extensible pipeline, and ViewNavigator form both a diagnostic tool and a stepping stone toward more powerful VLM-based agents. This benchmark raises awareness of current VLM limitations in multi-view integration and serves as a selection standard for base models when building VLM-based 3D-reasoning agents.
+                MultiView-Bench, its extensible pipeline, and ViewNavigator form both a diagnostic tool and a stepping stone toward more powerful VLM-based agents. This benchmark raises awareness of current VLM limitations in multi-view integration and serves as a selection standard for base models when building VLM-based 3D-reasoning agents.
             </p>
             <p class="answer">
                 We hope that future research builds on this foundation to equip VLMs with the spatial understanding necessary for diverse downstream 3D tasks such as part assembly, scene editing, and 3D asset creation.
