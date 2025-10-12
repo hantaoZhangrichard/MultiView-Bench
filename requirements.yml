@@ -1,0 +1,31 @@
+name: mvbench
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - python=3.11
+  - pytorch
+  - transformers
+  - trl
+  - numpy
+  - peft
+  - tqdm
+  - wandb
+  - openai
+  - anthropic
+  - pygltflib
+  - matplotlib
+  - git-lfs
+  - pip
+  - pip:
+      - bpy==4.3.0
+      - google==3.0.0
+      - google-api-core==2.24.2
+      - google-auth==2.38.0
+      - google-genai==1.10.0
+      - googleapis-common-protos==1.69.2
+      - torch
+      - torchvision
+      - torchaudio
+      - mathutils
