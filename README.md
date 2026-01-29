@@ -1,2 +1,2 @@
 # MultiView-Bench
-Repository for paper: Can VLMs Reason Through Multiple Views?
+Repository for paper: MultiView-Bench: A Diagnostic Benchmark for World-Centric Multi-View Integration in VLMs
