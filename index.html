@@ -302,36 +302,40 @@
                 Humans naturally perform multi-angle observations to construct coherent mental models of objects, resolving perceptual ambiguities that arise from single viewpoints. This ability is crucial when assembling complex objects, where each component must be rotated and inspected from multiple viewpoints to determine how it connects with others.
             </p>
             <p class="answer">
-                Current spatial reasoning benchmarks primarily assess single-view or few-view understanding, without testing the fundamental ability of VLMs to integrate partial visual evidence from multiple perspectives into a unified 3D understanding. We address this gap by introducing MultiView-Bench.
+                Current multi-view spatial reasoning benchmarks primarily assess egocentric spatial reasoning such as perspective-taking, view-dependent navigation, or dynamic viewpoint transformation. These benchmarks evaluate a model's ability to map pixels from one 2D plane to another or to predict the visual consequences of camera motion without targeting view-invariant (world-centric) spatial understanding and holistic 3D grounding. Such world-centric reasoning ability is a prerequisite for mechanical engineering and operating 3D modeling software (e.g. Blender) where the agent needs to manipulate in global space, independent of where the user is looking. We address this gap by introducing MultiView-Bench.
             </p>
 
             <div class="highlight-box">
                 <h3>Our Contributions</h3>
                 <ul>
-                    <li>We introduce <strong>MultiView-Bench</strong>, a comprehensive and extensible benchmark for evaluating VLMs' ability to integrate multi-view observations into coherent 3D scene understanding</li>
-                    <li>We provide a flexible <strong>data generation pipeline</strong> that allows researchers to easily extend the dataset with new 3D assets, task variants, and viewpoint configurations</li>
-                    <li>We conduct a <strong>systematic evaluation</strong> of state-of-the-art VLMs on MultiView-Bench, revealing key failure modes, biases, and limitations</li>
-                    <li>We propose <strong>ViewNavigator</strong>, a multi-agent framework that models perception, planning, and belief-updating, consistently enhancing VLM performance by over 50%</li>
+                    <li>We introduce <strong>MultiView-Bench</strong>, a diagnostic benchmark expressly designed to evaluate multi-view integration for holistic, world-centric 3D scene comprehension. Our benchmark serves as a prerequisite test VLMs should pass before deployment to mechanical engineering and 3D modeling.</li>
+                    <li>We provide a flexible <strong>data generation pipeline</strong> that allows researchers to easily extend the dataset with new 3D assets, task variants, and viewpoint configurations.</li>
+                    <li>We conduct a <strong>systematic evaluation</strong> of frontier VLMs, revealing consistent failure modes: while models excel at 2D planar relations, they perform near random chance on complex 3D spatial relations.</li>
+                    <li>We propose <strong>ViewNavigator</strong>,  multi-agent framework that models perception, planning, and belief-updating, which improves the performance of diverse base models by <strong>3-5x</strong>.</li>
                 </ul>
             </div>
         </section>
 
         <!-- MOTIVATION SECTION -->
         <section class="section">
-            <h2>2. Motivation</h2>
+            <h2>2. Motivation: Furniture Assembly as a Case Study</h2>
             <p class="answer">
-                To illustrate the necessity of our benchmark, we motivate our study through a real-world furniture part assembly task. In this setting, labeled components (legs, table tops, backrests) must be connected and arranged to form functional furniture. Solving this task naturally demands multi-view perception, 3D spatial reasoning, and common-sense knowledge.
+                As LLMs and VLMs are increasingly deployed as agents to control software tools, measuring their proficiency within these interfaces is critical. To illustrate the necessity and practical importance of our benchmark, we motivate our study through a furniture part assembly task in Blender GUI. In this setting, a collection of labeled components (e.g., legs, table tops, backrests) must be connected and arranged to form a functional piece of furniture. Solving this task naturally demands multi-view perception, 3D spatial reasoning, and common-sense knowledge about how objects are typically used and combined.
             </p>
 
             <p class="answer">
                 While recent LLM-based approaches have shown success in environments like Minecraft or Blender where assemblies involve standardized blocks, real-world furniture assembly poses significantly greater complexity due to irregular, non-convex shapes that defy concise linguistic descriptions.
             </p>
 
+            <div class="highlight-box">
+                <h3>Core Motivation</h3>
+                <ul>
+                    Tasks like furniture assembly require VLMs to integrate information across multiple visual perspectives to build accurate world-centric 3D understanding. MultiView-Bench is designed to stress-test precisely these multi-view spatial reasoning capabilities, serving as a diagnostic benchmark before deploying VLMs in real-world 3D applications.
+                </ul>
+            </div>
+
             <img src="images/furniture_assembly.png" alt="Furniture Assembly" class="research-image">
             <p class="image-caption">Figure 2: Top Left: Many real-world objects do not lend themselves to simple natural language description. The table on the right can be described using fundamental convex shapes and their bounding boxes but the chair on the left has non-convex parts without an analytical expression. Top Right: Often times single-view observation leads to visual misconception and does not reveal some alignment issues. The chair looks well-assembled in the view shown on the left but when it turns to the view shown on the right we see the backrest is slightly misplaced in the X-axis. Bottom: Only using the bounding box dimensions, we are unable to assemble furniture that have non-convex parts. </p>
-            <p class="answer">
-                These examples underscore the critical need for robust VLMs capable of integrating information across multiple visual perspectives to build accurate internal 3D understanding.
-            </p>
         </section>
 
         <!-- MultiView-Bench SECTION -->
@@ -359,7 +363,7 @@
                 We fix a central object at the origin and randomize other objects' positions while enforcing minimum and maximum separation distances. To analyze model limitations, we construct controlled task variants:
             </p>
             <ul>
-                <li><strong>DoF=1:</strong> Objects placed along a single axis (1D relative relationships)</li>
+                <li><strong>DoF=1:</strong> Objects placed along the same axis</li>
                 <li><strong>DoF=2:</strong> Objects lie on the same 2D plane</li>
                 <li><strong>DoF=3:</strong> No constraints of placement in 3D space</li>
             </ul>
@@ -441,57 +445,92 @@
 
         <!-- RESULTS SECTION -->
         <section class="section">
-            <h2>4. Evaluation Results</h2>
+            <h2>Frontier Models Cannot Solve It Yet</h2>
             <p class="answer">
-                We systematically evaluated the performance of 7 leading VLMs including Claude 3.7 Sonnet, Claude 4 Sonnet, Gemini 2.5 Flash, Gemini 2.5 Pro, GPT-4o, GPT-5, and GPT-o3.
+                We systematically evaluate seven leading VLMs on MultiView-Bench: Claude 3.7 Sonnet, Claude 4 Sonnet, Gemini 2.5 Flash, Gemini 2.5 Pro, GPT-4o, GPT-5, and GPT-o3.
             </p>
 
-            <img src="images/3d_tasks_model_comparison.png" alt="Model Performance Comparison" class="research-image">
-            <p class="image-caption">Figure 4: Performance comparison across different VLMs on MultiView-Bench tasks. GPT-5 achieves best overall performance while models like Claude series and GPT-4o struggle on harder 3D tasks.</p>
-        </section>
+            <img src="images/3d_tasks_model_comparison.png" alt="Model performance on MultiView-Bench" class="research-image">
+            <p class="image-caption">Figure: Model performance on MultiView-Bench across task variants. The red dashed line indicates random chance (~3.7%).</p>
 
-        <!-- FAILURE AND BIAS ANALYSIS -->
-        <section class="section">
-            <h2>5. Failure and Bias Analysis</h2>
+            <h3>Performance Overview</h3>
+            <p class="answer">
+                The results reveal a striking finding: <strong>most frontier models perform near random chance on the hardest tasks</strong>. On 3D DoF=3 and 3D Real World, models like Claude series and GPT-4o barely exceed the <strong>3.7%</strong> random baseline. Even GPT-5, the best-performing model, achieves only <strong>50%</strong> accuracy on 3D DoF=3—far from reliable for real-world deployment. We have the following key observations:
+            </p>
+            <ul>
+                <li><strong>Task difficulty scales with DoF:</strong> As we decrease DoF from 3 to 1, accuracy improves dramatically. Claude 3.7 Sonnet reaches near GPT-5 level when DoF=1, suggesting models handle simpler spatial configurations but fail at full 3D reasoning.</li>
+                <li><strong>Single view is insufficient:</strong> Providing only a single isometric view (clearly displaying all three axes) drops all models to random chance, confirming that <em>multi-view integration is essential</em>—not merely helpful.</li>
+                <li><strong>Real-world objects are harder:</strong> Performance on 3D Real World (using 3DCoMPaT++ assets) is consistently lower than synthetic primitives, indicating additional challenges from complex geometry and textures.</li>
+            </ul>
+
+            <h3>Failure Pattern Analysis</h3>
+            <p class="answer">
+                To understand <em>why</em> models fail, we decompose the spatial reasoning task into intermediate sub-steps analogous to human reasoning:
+            </p>
+            <ul>
+                <li><strong>Step 1 - Object Identification:</strong> Recognizing and distinguishing individual objects.</li>
+                <li><strong>Step 2 - 2D Spatial Relation:</strong> Articulating relative object positions within a given 2D viewpoint.</li>
+                <li><strong>Step 3 - Axis Direction Identification:</strong> Interpreting the directionality of each axis within the 3D scene.</li>
+                <li><strong>Step 4 - 3D Position Translation:</strong> Translating observed 2D relationships into explicit 3D positional descriptions.</li>
+            </ul>
+
+            <p class="answer">
+                Our analysis reveals that VLMs succeed at Steps 1 and 2 but <strong>fail critically at Step 3</strong>—identifying axis directions in 3D context. Models consistently struggle to express axis directions using unambiguous 3D spatial language, even when the coordinate system is clearly visible.
+            </p>
+
+            <p class="answer">
+                Motivated by this observation, we explored whether decomposing the task into simpler 2D views can improve performance. We test two configurations: (1) <strong>Single-agent</strong> (all three views provided simultaneously) and (2) <strong>Multi-agent</strong> (each agent independently assesses one view).
+            </p>
+
+            <p class="answer">
+            Results reveal two key findings: 
+            </p>
+            <ul>
+                <li><strong>(i) simplifying 3D to 2D dramatically improves performance</strong></li>
+                <li><strong>(ii) decomposing multi-view into single-view sub-tasks yields further gains</strong></li>
+            </ul>
+            <p class="answer">
+                This confirms that <strong>frontier VLMs struggle with both 3D perception and multi-view integration</strong>.
+            </p>
+
+            <img src="images/2d_comparison.png" alt="2D Comparison" class="research-image">
+            <p class="image-caption">Figure: Simplifying 3D to 2D dramatically improves performance, and decomposing multi-view into single-view sub-tasks yields further gains. This confirms that frontier VLMs struggle with both 3D perception and multi-view integration.</p>
+
+            <h3>Bias Analysis</h3>
             
-            <h3>5.1 Failure Patterns</h3>
             <p class="answer">
-                Single isometric views (clearly displaying all three axes) significantly reduced accuracy, underscoring the essential role of multi-view observations. 
-                VLMs primarily struggle with <strong>accurately identifying and articulating the directionality of axes within the 3D context</strong>. Models consistently exhibited difficulty in expressing axis directions using clear and unambiguous 3D spatial language. Motivated by this observation, we further explored whether VLM performance could be enhanced by decomposing the task into simpler 2D views. We designed a variant of the MultiView-Bench task (2D) utilizing three canonical (front, side, top) views, each emphasizing one 2D plane (XZ, YZ, XY) and clearly displaying only two axes per view. Models were tested under two configurations: first, providing all three canonical views simultaneously to produce a single integrated 3D answer (Single-agent), and second, utilizing a multi-agent approach wherein each agent independently assessed one canonical view, with the final 3D answer obtained by straightforward integration of individual responses (resolving inconsistencies by random selection).
-            </p>
-            <img src="images/task_example_2.png" alt="Task Example" class="research-image">
-            <p class="image-caption">Figure 5: Task examples for failure and bias analysis.</p>
-
-            <img src="images/2d_comparison.png" alt="Model Performance Comparison" class="research-image">
-            <p class="image-caption">Figure 6: By simplifying the task into 2D multi-view task, VLMs demonstrate significantly higher performance. Decomposing 2D multi-view task into a multi-agent 2D single-view task can further improve VLMs’ performances by a great margin. Adding visual aids like grids and distinct colors enhances the performance of Claude series but shows limited help to Gemini series and GPT-4o.</p>
-
-            <h3>5.2 Bias Discovery</h3>
-            
-            <h4>Visual Enhancements</h4>
-            <p class="answer">
-                We explored how visual enhancements (distinct color schemes and grids) influence VLMs' 3D perception. Visual structures indeed boost performance for Claude series models; however, surprisingly, Gemini 2.5 Pro's performance declines under these conditions. We also observed distinct color biases among different models.
+                <strong>Visual Enhancements:</strong> We explore how visual aids (color schemes, grids) influence performance. Prior work suggests structured visual aids improve VLM reasoning. Our experiments reveal model-specific effects: <strong>grids and distinct colors help Claude series but <em>surprisingly hurt Gemini 2.5 Pro</em></strong>. We also observe color biases—models show preferential responses to particular color combinations that diverge from human perception.
             </p>
 
-            <h4>Coordinate Rotation</h4>
             <p class="answer">
-                Models frequently disregarded explicitly depicted coordinate directions, defaulting to reasoning based on the conventional right-handed coordinate system. This reflects a strong inductive bias from extensive exposure to standard coordinate conventions during pretraining. Performance degraded significantly under unconventional axis orientations.
+                <strong>Coordinate Rotation:</strong> We identify a striking pattern: models frequently <em>ignore explicitly depicted coordinate directions</em>, defaulting to the conventional right-handed coordinate system. To test this, we rotate axes to non-standard angles (23°, 45°, 68°, etc.). Results confirm <em>severe performance degradation under unconventional orientations</em>, revealing that VLMs heavily rely on learned coordinate-system priors rather than reasoning from visual evidence.
             </p>
 
             <div class="image-row">
                 <div class="image-col">
-                    <img src="images/2d_color_comparison.png" alt="2d_color" class="research-image">
-                    <p class="image-caption">Figure 7(a): VLMs exhibit fluctuating performance across different color combinations. Notably, these fluctuations diverge from human perception: the models perform better on the less distinguishable Maroon/Purple pair, yet worse on the more distinct Olive/Coral pair.</p>
+                    <img src="images/2d_color_comparison.png" alt="Color Bias" class="research-image">
+                    <p class="image-caption"><strong>(a) Color bias:</strong> VLM performance fluctuates across color combinations in ways that diverge from human perception (e.g., performing worse on distinct Olive/Coral pairs).</p>
                 </div>
                 <div class="image-col">
-                    <img src="images/2D_rotation.png" alt="2d_rotation" class="research-image">
-                    <p class="image-caption">Figure 7(b): VLMs' performances degrade under unconventional axis orientations.</p>
+                    <img src="images/2D_rotation.png" alt="Rotation Bias" class="research-image">
+                    <p class="image-caption"><strong>(b) Rotation bias:</strong> Performance degrades under non-standard axis orientations, revealing reliance on memorized conventions.</p>
                 </div>
+            </div>
+
+            <div class="highlight-box">
+                <h3>Key Takeaways</h3>
+                <ul>
+                    <li>Frontier VLMs perform near <strong>random chance</strong> on 3D tasks (DoF=3), with most models under 20%.</li>
+                    <li>Primary failure: <strong>axis direction identification</strong>—models succeed at 2D but fail at 3D.</li>
+                    <li>VLMs struggle with <strong>both</strong> 3D perception <strong>and</strong> multi-view integration.</li>
+                    <li>Strong <strong>inductive biases</strong> toward conventional coordinate systems.</li>
+                </ul>
             </div>
         </section>
 
         <!-- VIEWNAVIGATOR SECTION -->
         <section class="section">
-            <h2>6. ViewNavigator</h2>
+            <h2>6. ViewNavigator: Can We Augment VLMs with Agentic Reasoning?</h2>
             <p class="answer">
                 We introduce ViewNavigator, a multi-agent system designed to actively reason about spatial relationships between objects within a 3D environment. Our agent architecture integrates a VLM and an LLM in a closed-loop manner without requiring post-training or external geometry-based image analysis.
             </p>
@@ -508,7 +547,7 @@
             </ul>
 
             <p class="answer">
-                The agent captures multiple images using micro-jitters (small perturbations around a base viewpoint) to assess stability in the VLM's answers, which serves as a confidence score. ViewNavigator significantly enhances the performance of diverse base models on MultiView-Bench by more than 50%, demonstrating its potential as a plug-and-play reasoning scaffold.
+                The agent captures multiple images using micro-jitters (small perturbations around a base viewpoint) to assess stability in the VLM's answers, which serves as a confidence score. ViewNavigator significantly enhances the performance of diverse base models on MultiView-Bench by 3-5x, demonstrating its potential as a plug-and-play reasoning scaffold.
             </p>
             <img src="images/3d_tasks_model_comparison_agentic.png" alt="ViewNavigator Performance" class="research-image">
             <p class="image-caption">Figure 9: ViewNavigator framework significantly enhances various base models’ performances on the 3D DoF=3 tasks.</p>
@@ -518,13 +557,7 @@
         <section class="section">
             <h2>7. Conclusion</h2>
             <p class="answer">
-                We presented MultiView-Bench, a benchmark specifically designed to test the ability of VLMs to integrate multi-view observations into coherent 3D scene understanding. Our systematic evaluation revealed fundamental limitations: while VLMs excel at recognizing 2D planar relations from single images, they struggle with integrating information across multiple views and interpreting 3D spatial relations.
-            </p>
-            <p class="answer">
-                MultiView-Bench, its extensible pipeline, and ViewNavigator form both a diagnostic tool and a stepping stone toward more powerful VLM-based agents. This benchmark raises awareness of current VLM limitations in multi-view integration and serves as a selection standard for base models when building VLM-based 3D-reasoning agents.
-            </p>
-            <p class="answer">
-                We hope that future research builds on this foundation to equip VLMs with the spatial understanding necessary for diverse downstream 3D tasks such as part assembly, scene editing, and 3D asset creation.
+                We present <b>MultiView-Bench</b>, a diagnostic benchmark for evaluating VLMs' ability to integrate multi-view observations into world-centric 3D understanding. Our evaluation reveals that frontier VLMs perform near random chance on challenging 3D tasks, failing primarily at axis direction identification and multi-view integration. We also introduce <b>ViewNavigator</b>, a multi-agent framework that improves performance by 3-5x through probabilistic belief aggregation and active view selection. Together, MultiView-Bench and its extensible pipeline serve as both a diagnostic tool for understanding VLM limitations and a selection criterion for building VLM-based agents in 3D applications such as CAD software and robotic assembly.
             </p>
         </section>
 
